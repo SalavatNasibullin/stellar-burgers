@@ -18,10 +18,7 @@ const defaultState: IngredientsState = {
 
 export const fetchIngredients = createAsyncThunk(
   'ingredients/getAll',
-  async () => {
-    const result = await getIngredientsApi();
-    return result;
-  }
+  getIngredientsApi
 );
 
 // Создание слайса

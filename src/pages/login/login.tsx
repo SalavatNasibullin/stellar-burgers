@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { LoginUI } from '@ui-pages';
 import { useDispatch, useSelector } from '../../services/store';
 import { login, setLoginSuccess } from '../../services/slices/user-slice';
-import { setCookie } from '../../utils/cookie';
 import { Preloader } from '@ui';
 
 // Тип формы входа
@@ -20,6 +19,9 @@ export const Login: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
+
   const isLoading = useSelector((state) => state.auth.loading);
 
   // Обработка отправки формы
@@ -29,12 +31,10 @@ export const Login: React.FC = () => {
     // Отправка запроса на вход
     dispatch(login({ email, password }))
       .unwrap()
-      .then((response) => {
+      .then(() => {
         // Сохранение токенов
-        localStorage.setItem('refreshToken', response.refreshToken);
-        setCookie('accessToken', response.accessToken);
         dispatch(setLoginSuccess(true));
-        navigate('/');
+        navigate(from, { replace: true });
       })
       .catch((error) => {
         console.error('Ошибка входа:', error);

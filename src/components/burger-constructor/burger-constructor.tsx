@@ -39,7 +39,8 @@ export const BurgerConstructor: FC = () => {
 
     const allIngredientIds = [
       bun._id,
-      ...fillings.map((item: TConstructorIngredient) => item._id)
+      ...fillings.map((item: TConstructorIngredient) => item._id),
+      bun._id
     ];
 
     dispatch(newUserOrder(allIngredientIds));

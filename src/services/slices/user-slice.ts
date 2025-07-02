@@ -10,6 +10,7 @@ import {
 
 import { TOrder } from '@utils-types';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { setCookie } from '../../utils/cookie';
 
 // начальное состояние
 const startState: {
@@ -40,10 +41,20 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
   return data;
 });
 
-export const login = createAsyncThunk('user/login', async (userData: any) => {
-  const data = await loginUserApi(userData);
-  return data;
-});
+export const login = createAsyncThunk(
+  'user/login',
+  async (userData: { email: string; password: string }, thunkAPI) => {
+    try {
+      const response = await loginUserApi(userData);
+      localStorage.setItem('refreshToken', response.refreshToken);
+      setCookie('accessToken', response.accessToken);
+
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 
 export const register = createAsyncThunk(
   'user/register',
@@ -73,7 +84,7 @@ export const fetchUserOrders = createAsyncThunk(
 
 export const newUserOrder = createAsyncThunk(
   'user/makeOrder',
-  async (orderData: any) => {
+  async (orderData: string[]) => {
     const res = await orderBurgerApi(orderData);
     return res;
   }

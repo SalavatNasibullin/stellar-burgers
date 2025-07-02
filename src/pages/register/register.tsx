@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { RegisterUI } from '@ui-pages';
 import { useDispatch, useSelector } from '../../services/store';
 import { useForm } from '../../utils/useForm';
@@ -16,6 +16,8 @@ type TRegisterForm = {
 export const Register: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
 
   // начальное состояние формы
   const { values, handleChange } = useForm<TRegisterForm>({
@@ -33,7 +35,7 @@ export const Register: React.FC = () => {
 
     // отправляем данные
     dispatch(register(values)).then(() => {
-      navigate('/login');
+      navigate(from, { replace: true });
     });
   };
 
