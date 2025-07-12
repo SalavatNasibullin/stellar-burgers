@@ -19,6 +19,7 @@ export const BurgerIngredient: React.FC<TBurgerIngredientProps> = (props) => {
       count={props.count}
       locationState={{ background: location }}
       handleAdd={onAddIngredient}
+      dataCy={props.dataCy}
     />
   );
 };
